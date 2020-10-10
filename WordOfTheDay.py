@@ -14,16 +14,6 @@ client = commands.Bot(command_prefix="!")
 async def on_ready():
     print("Word of the Day bot is ready")
 
-# @client.command()
-# async def word(message):
-
-# @client.command()
-# async def help(message):
-#
-# @client.command()
-# async def whaddup(message):
-#     await message.channel.send("Oh Whaddup")
-
 @client.event
 async def on_message(message):
     try:
@@ -44,8 +34,12 @@ async def on_message(message):
             page_html = requests.get(dictionarySite, headers={'User-Agent': 'Mozilla/5.0'}).text
             page_soup = soup(page_html, "html.parser")
             word = page_soup.find("title")
+            onlyWord = page_soup.find("div",class_="word-and-pronunciation")
             literaryElement = page_soup.find("span", class_="main-attr")
             pronunciation = page_soup.find("span", class_="word-syllables")
+            example = page_soup.find("div", class_="wotd-examples")
+            onlyWord = onlyWord.text.replace("play", "").strip()
+            print(onlyWord)
             definitions = {}
 
             for iteration,tag in enumerate(page_soup.find_all("p")):
@@ -55,10 +49,11 @@ async def on_message(message):
             finalmessage = ""
             finalmessage += word.string + "\n"
             finalmessage += literaryElement.string + "\n"
-            finalmessage += "Definition(s): \n "
             finalmessage += "Pronunciation: " + pronunciation.text + "\n"
+            finalmessage += "Definition(s): \n "
             for definition in definitions:
                 finalmessage += definitions[definition] + "\n"
+            finalmessage += "Example: " + example.text.replace("Examples\n", "").replace(onlyWord, "**__"+onlyWord+"__**")
             finalmessage += dictionarySite
             await message.channel.send(finalmessage)
         if message.content.lower()[0:7] == "!define":
@@ -75,6 +70,7 @@ async def on_message(message):
                     pronunciation = definitionSoup.find("span", class_="pr")
                     literaryElement = definitionSoup.find("a", class_="important-blue-link")
                     suggestions = definitionSoup.find("p", class_="spelling-suggestions")
+                    examples = definitionSoup.find_all("span", class_="ex-sent")
                     if literaryElement is not None:
                         finalmessage += "Word: " +"**" + defineWord.upper() + "**" + "\t-\t" + literaryElement.text + "\n "
                     if pronunciation is not None:
@@ -84,11 +80,15 @@ async def on_message(message):
                             finalmessage += re.sub(' +', ' ', defin.text.replace("\n", " - ").strip()) + "\n"
                         if iteration ==2:
                             break
+                    for example in examples:
+                        if(defineWord in example.text.strip()):
+                            finalmessage += "Example in a sentence: \n" + example.text.strip().replace(defineWord, "**__"+defineWord+"__**") + "\n"
+                            break;
                     if suggestions is not None:
                         finalmessage += "Could not find the word " + defineWord + " in the dictionary, you may have spelled it wrong,\n did you mean one of the following words?\n"
                         suggestions = suggestions.text.replace(" ", ", ")
                         finalmessage += suggestions + "\n"
-                    finalmessage += "Reference site: " + site
+                    finalmessage += "Reference site: \n" + site
                 except HTTPError as err:
                     if err.code == 404:
                         finalmessage += "Could not find word in the dictionary,"
@@ -118,6 +118,8 @@ async def on_message(message):
                     #get rid of the word of the day definition
                     if defins:
                         defins.pop(1)
+                    else:
+                        finalmessage += "Couldn't find that word/phrase. Go to the following site to add one: \n"
                     for iteration, defin in enumerate(defins):
                         finalmessage += "\t: " + defin.text.replace("\n", "").strip() + "\n"
                         if iteration == 2:
