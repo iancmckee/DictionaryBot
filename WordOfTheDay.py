@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup as soup
-from urllib.request import urlopen as uReq
 import requests
 from requests import HTTPError
 from discord.utils import get
