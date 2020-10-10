@@ -4,7 +4,6 @@ import requests
 from requests import HTTPError
 from discord.utils import get
 import string
-import discord
 from discord.ext import commands
 from discord.errors import HTTPException
 import re
