@@ -142,5 +142,5 @@ async def on_message(message):
     except Exception as exception:
         await message.channel.send("Discord's API can't handle this many definitions, if you want to know the definitions to this word go to: \n" + site + "\n" + str(exception))
 
-
-os.environ("DISCORD_DICTIONARY_BOT_KEY")
+key = os.environ.get('DISCORD_DICTIONARY_BOT_KEY')
+client.run(key)
