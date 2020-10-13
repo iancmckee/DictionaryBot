@@ -39,11 +39,10 @@ async def on_message(message):
             pronunciation = page_soup.find("span", class_="word-syllables")
             example = page_soup.find("div", class_="wotd-examples")
             onlyWord = onlyWord.text.replace("play", "").strip()
-            print(onlyWord)
             definitions = {}
 
             for iteration,tag in enumerate(page_soup.find_all("p")):
-                if tag.text[0:1].isdigit():
+                if tag.text[0:1].isdigit() or tag.text[0:1] == ":":
                     definitions[iteration] = tag.text
 
             finalmessage = ""
