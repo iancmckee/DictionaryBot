@@ -33,6 +33,8 @@ async def on_message(message):
             await message.channel.send("I'm a super basic bot. here are your options.... \n \n"
                                        "!help\t-->\tyou enetered this, you know this pulls up the help menu \n"
                                        "!word\t-->\tthis command will provide a word of the day... \n"
+                                       "!word MM/DD/YYYY \t-->\t this command will provide a word of the day "
+                                       "for the date specified in the format specified \n"
                                        "!define {Word or phrased to be defined} \t-->\t This command will define"
                                        " a word or phrase you declare after the command.\n"
                                        "!udefine {Word or phrased to be defined} \t-->\t This command"
@@ -160,9 +162,11 @@ async def on_message(message):
             "Incorrect date format included, if you want a word of the day for a specific day it"
             " must be in the following format - \"MM/DD/YYYY\"")
     except AttributeError:
-        await message.channel.send("You entered a value that isn't currently supported, likely an issue with a date for the word of the day being too far in the past.")
+        await message.channel.send("You entered a value that isn't currently supported, likely an issue with a date"
+                                   " for the word of the day being too far in the past or a future date.")
     except Exception as exception:
-        await message.channel.send("Discord's API can't handle this many definitions, if you want to know the definitions to this word go to: \n" + site + "\n" + str(exception))
+        await message.channel.send("Discord's API can't handle this many definitions, if you want to know"
+                                   " the definitions to this word go to: \n" + site + "\n" + str(exception))
 
 key = os.environ.get('DISCORD_DICTIONARY_BOT_KEY')
 client.run(key)
