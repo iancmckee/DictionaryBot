@@ -3,12 +3,22 @@ import requests
 from requests import HTTPError
 from discord.utils import get
 import string
+import datetime
 from discord.ext import commands
 from discord.errors import HTTPException
 import re
 import os
 
 client = commands.Bot(command_prefix="!")
+
+# define Python user-defined exceptions
+class Error(Exception):
+    """Base class for other exceptions"""
+    pass
+
+class dateFormatIssue(Error):
+    """Raised when the date format is incorrect"""
+    pass
 
 @client.event
 async def on_ready():
@@ -31,6 +41,13 @@ async def on_message(message):
                                        "That concludes the options")
         if message.content.lower()[0:5] == ("!word"):
             dictionarySite = "https://www.merriam-webster.com/word-of-the-day"
+            date = message.content.lower()[5:].lstrip()
+            if date:
+                try:
+                    formattedDateObj = datetime.datetime.strptime(date, '%m/%d/%Y')
+                    dictionarySite += "/" + str(formattedDateObj.date())
+                except:
+                    raise dateFormatIssue
             page_html = requests.get(dictionarySite, headers={'User-Agent': 'Mozilla/5.0'}).text
             page_soup = soup(page_html, "html.parser")
             word = page_soup.find("title")
@@ -138,6 +155,12 @@ async def on_message(message):
             await message.channel.send(finalmessage)
         if message.content.lower()[0:16] == "!whosucksatchess" or message.content.lower()[0:6] == "!chess":
             await message.channel.send("Harry sucks at Chess")
+    except dateFormatIssue:
+        await message.channel.send(
+            "Incorrect date format included, if you want a word of the day for a specific day it"
+            " must be in the following format - \"MM/DD/YYYY\"")
+    except AttributeError:
+        await message.channel.send("You entered a value that isn't currently supported, likely an issue with a date for the word of the day being to far in the past.")
     except Exception as exception:
         await message.channel.send("Discord's API can't handle this many definitions, if you want to know the definitions to this word go to: \n" + site + "\n" + str(exception))
 
