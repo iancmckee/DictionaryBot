@@ -160,7 +160,7 @@ async def on_message(message):
             "Incorrect date format included, if you want a word of the day for a specific day it"
             " must be in the following format - \"MM/DD/YYYY\"")
     except AttributeError:
-        await message.channel.send("You entered a value that isn't currently supported, likely an issue with a date for the word of the day being to far in the past.")
+        await message.channel.send("You entered a value that isn't currently supported, likely an issue with a date for the word of the day being too far in the past.")
     except Exception as exception:
         await message.channel.send("Discord's API can't handle this many definitions, if you want to know the definitions to this word go to: \n" + site + "\n" + str(exception))
 
