@@ -165,10 +165,14 @@ async def on_message(message):
                     phrase = message.content[message.content.find("ass "):].replace("ass ", "ass!")
                     firstSpace = phrase.find(" ")
                     if firstSpace == -1:
-                        assPhrase = phrase.replace("!", " ")
+                        assPhrase = phrase.replace("!", "-")
                     else:
-                        assPhrase = phrase[:firstSpace + 1].replace("!", " ")
-                    await message.channel.send("What's an '" + assPhrase + "'", file=discord.File('spongebob.png'))
+                        assPhrase = phrase[:firstSpace + 1].replace("!", "-")
+                    if assPhrase[len(assPhrase.rstrip())-1:].rstrip() == "s":
+                        begin = "What are "
+                    else:
+                        begin = "What's an "
+                    await message.channel.send(begin + assPhrase.rstrip() + "?", file=discord.File('spongebob.png'))
     except dateFormatIssue:
         await message.channel.send(
             "Incorrect date format included, if you want a word of the day for a specific day it"
