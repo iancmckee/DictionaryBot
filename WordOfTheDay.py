@@ -4,6 +4,7 @@ from requests import HTTPError
 from discord.utils import get
 import string
 import datetime
+import discord
 from discord.ext import commands
 from discord.errors import HTTPException
 import re
@@ -157,6 +158,17 @@ async def on_message(message):
             await message.channel.send(finalmessage)
         if message.content.lower()[0:16] == "!whosucksatchess" or message.content.lower()[0:6] == "!chess":
             await message.channel.send("Harry sucks at Chess")
+        else:
+            if str(message.guild) == "Deez-Bois" and str(message.author) != "DictionaryDick#2026":
+                if "ass " in message.content:
+                    firstAssLocation = message.content.find("ass ")
+                    phrase = message.content[message.content.find("ass "):].replace("ass ", "ass!")
+                    firstSpace = phrase.find(" ")
+                    if firstSpace == -1:
+                        assPhrase = phrase.replace("!", " ")
+                    else:
+                        assPhrase = phrase[:firstSpace + 1].replace("!", " ")
+                    await message.channel.send("What's an '" + assPhrase + "'", file=discord.File('spongebob.png'))
     except dateFormatIssue:
         await message.channel.send(
             "Incorrect date format included, if you want a word of the day for a specific day it"
