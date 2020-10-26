@@ -156,9 +156,16 @@ async def on_message(message):
                     await message.channel.send("Just a generic Exception... my bad.\n" + str(exception))
             finalmessage+= site
             await message.channel.send(finalmessage)
+        if message.content.lower()[0:9] == "!auxverbs":
+            await message.channel.send("Auxillary Verbs are: " + "am, is, are, was were, "
+                                                                 "being, been, be, Have, has, "
+                                                                 "had, do, does, did, will, would, "
+                                                                 "shall, and should")
         if message.content.lower()[0:16] == "!whosucksatchess" or message.content.lower()[0:6] == "!chess":
             await message.channel.send("Harry sucks at Chess")
         else:
+            aux_verbs = ["am", "is", "are", "was" "were", "being", "been", "be", "Have",
+                         "has", "had", "do", "does", "did", "will", "would", "shall", "should"]
             if str(message.guild) == "Deez-Bois" and str(message.author) != "DictionaryDick#2026":
                 if "ass " in message.content:
                     firstAssLocation = message.content.find("ass ")
@@ -172,7 +179,8 @@ async def on_message(message):
                         begin = "What are "
                     else:
                         begin = "What's an "
-                    await message.channel.send(begin + assPhrase.rstrip() + "?", file=discord.File('spongebob.png'))
+                    if phrase[assPhrase.find('-')+1:len(assPhrase)].rstrip() not in aux_verbs:
+                        await message.channel.send(begin + assPhrase.rstrip() + "?", file=discord.File('spongebob.png'))
     except dateFormatIssue:
         await message.channel.send(
             "Incorrect date format included, if you want a word of the day for a specific day it"
